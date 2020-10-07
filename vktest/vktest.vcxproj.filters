@@ -16,24 +16,36 @@
     <Filter Include="Setup">
       <UniqueIdentifier>{5e5b16d4-cfa0-4f4d-9780-2269d791c8fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Presentation">
+      <UniqueIdentifier>{2e2034d7-2ce1-4d76-ad05-5ace646a0206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{7415ad0b-db18-4f60-9d65-13636497627c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Instance.cpp">
       <Filter>Setup</Filter>
     </ClCompile>
+    <ClCompile Include="WindowSurface.cpp">
+      <Filter>Presentation</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Instance.h">
       <Filter>Setup</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowSurface.h">
+      <Filter>Presentation</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,21 +1,27 @@
 #include "Instance.h"
 #include <iostream>
+#include <set>
 
-void Instance::initVulkan()
+void Instance::initVulkan(GLFWwindow* window)
 {
 	try {
 		createInstance();
+		windowSurface.createSurface(instance, window);
 		pickPhysicalDevice();
 		createLogicalDevice();
+		createSwapChain();
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
 	}
-	
+
 }
 
 void Instance::cleanup()
 {
+	//vkDeviceWaitIdle(device);
+	vkDestroySwapchainKHR(device, swapChain, nullptr);
+	windowSurface.cleanup(instance);
 	vkDestroyDevice(device, nullptr);
 	vkDestroyInstance(instance, nullptr);
 }
@@ -71,6 +77,7 @@ void Instance::createInstance()
 		createInfo.ppEnabledLayerNames = nullptr;
 	}
 
+
 	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create instance");
 	}
@@ -124,14 +131,76 @@ void Instance::pickPhysicalDevice()
 	}
 }
 
-bool Instance::isDeviceSuitable(VkPhysicalDevice device)
+void Instance::createSwapChain()
+{
+	SwapChainSupportDetails swapChainSupport = windowSurface.querySwapChainSupport(physicalDevice);
+
+	VkSurfaceFormatKHR surfaceFormat = windowSurface.chooseSwapSurfaceFormat(swapChainSupport.formats);
+	VkPresentModeKHR presentMode = windowSurface.chooseSwapPresentMode(swapChainSupport.presentModes);
+	VkExtent2D extent = windowSurface.chooseSwapExtent(swapChainSupport.capabilities);
+
+	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+		imageCount = swapChainSupport.capabilities.maxImageCount;
+	}
+
+	VkSwapchainCreateInfoKHR createInfo{};
+	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	createInfo.surface = windowSurface.getSurface();
+
+	createInfo.minImageCount = imageCount;
+	createInfo.imageFormat = surfaceFormat.format;
+	createInfo.imageColorSpace = surfaceFormat.colorSpace;
+	createInfo.imageExtent = extent;
+	createInfo.imageArrayLayers = 1;
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+
+	if (indices.graphicsFamily != indices.presentFamily) {
+		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+		createInfo.queueFamilyIndexCount = 2;
+		createInfo.pQueueFamilyIndices = queueFamilyIndices;
+	}
+	else {
+		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	}
+
+	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	createInfo.presentMode = presentMode;
+	createInfo.clipped = VK_TRUE;
+
+	createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create swap chain!");
+	}
+
+	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+	swapChainImages.resize(imageCount);
+	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+
+	swapChainImageFormat = surfaceFormat.format;
+	swapChainExtent = extent;
+}
+
+bool Instance::isDeviceSuitable(const VkPhysicalDevice& device)
 {
 	QueueFamilyIndices indices = findQueueFamilies(device);
 
-	return indices.isComplete();
+	bool extensionsSupported = windowSurface.checkDeviceExtensionSupport(device);
+	bool swapChainAdequate = false;
+	if (extensionsSupported) {
+		SwapChainSupportDetails swapChainSupport = windowSurface.querySwapChainSupport(device);
+		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+	}
+
+	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
-QueueFamilyIndices Instance::findQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices Instance::findQueueFamilies(const VkPhysicalDevice& device)
 {
 	QueueFamilyIndices indices;
 
@@ -146,7 +215,11 @@ QueueFamilyIndices Instance::findQueueFamilies(VkPhysicalDevice device)
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
 			indices.graphicsFamily = i;
 		}
-
+		VkBool32 presentSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, windowSurface.getSurface(), &presentSupport);
+		if (queueFamily.queueCount > 0 && presentSupport) {
+			indices.presentFamily = i;
+		}
 		if (indices.isComplete()) {
 			break;
 		}
@@ -161,21 +234,27 @@ void Instance::createLogicalDevice()
 {
 	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
-	VkDeviceQueueCreateInfo queueCreateInfo = {};
-	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-	queueCreateInfo.queueCount = 1;
-	float queuePriority = 1.0f;
-	queueCreateInfo.pQueuePriorities = &queuePriority;
+	std::vector<VkDeviceQueueCreateInfo>queueCreateInfos;
+	std::set<uint32_t>uniuqeQueueFamilies = { indices.graphicsFamily.value(),indices.presentFamily.value() };
 
+	float queuePriority = 1.0f;
+	for (uint32_t queueFamily : uniuqeQueueFamilies) {
+		VkDeviceQueueCreateInfo queueCreateInfo = {};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = queueFamily;
+		queueCreateInfo.queueCount = 1;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
 	VkPhysicalDeviceFeatures deviceFeatures = {};
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.pQueueCreateInfos = &queueCreateInfo;
-	createInfo.queueCreateInfoCount = 1;
+	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	createInfo.pQueueCreateInfos = queueCreateInfos.data();
 	createInfo.pEnabledFeatures = &deviceFeatures;
-	createInfo.enabledExtensionCount = 0;
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(Extensions.size());
+	createInfo.ppEnabledExtensionNames = Extensions.data();
 
 	if (enableValidationLayers) {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
@@ -191,6 +270,7 @@ void Instance::createLogicalDevice()
 	}
 
 	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
 
