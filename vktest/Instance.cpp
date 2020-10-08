@@ -10,6 +10,7 @@ void Instance::initVulkan(GLFWwindow* window)
 		pickPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain();
+		windowSurface.createImageView(device, swapChainImageFormat,swapChainImages);
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
@@ -21,7 +22,7 @@ void Instance::cleanup()
 {
 	//vkDeviceWaitIdle(device);
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
-	windowSurface.cleanup(instance);
+	windowSurface.cleanup(instance,device);
 	vkDestroyDevice(device, nullptr);
 	vkDestroyInstance(instance, nullptr);
 }

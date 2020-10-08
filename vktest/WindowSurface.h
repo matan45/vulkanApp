@@ -16,7 +16,7 @@ class WindowSurface
 {
 public:
 	void createSurface(VkInstance instance, GLFWwindow* window);
-	void cleanup(VkInstance instance);
+	void cleanup(VkInstance instance, VkDevice device);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -24,14 +24,16 @@ public:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+	void createImageView(VkDevice device, VkFormat swapChainImageFormat,const std::vector<VkImage>& swapChainImages);
 
 	VkSurfaceKHR getSurface()const {
 		return surface;
 	}
 
-
 private:
 	VkSurfaceKHR surface;
 	const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+	std::vector<VkImageView>swapChainImageViews;
 };
 
