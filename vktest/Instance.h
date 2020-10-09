@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "WindowSurface.h"
+#include "ShaderModules.h"
 
 struct QueueFamilyIndices
 {
@@ -45,6 +46,7 @@ private:
 	VkExtent2D swapChainExtent;
 
 	WindowSurface windowSurface;
+	ShaderModules shaderModules;
 
 	const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"

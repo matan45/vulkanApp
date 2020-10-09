@@ -2,3 +2,4 @@ lib
 Debug
 vktest/Debug
 .vs
+*.spv

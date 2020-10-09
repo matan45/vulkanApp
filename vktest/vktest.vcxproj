@@ -21,13 +21,19 @@
   <ItemGroup>
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ShaderModules.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="ShaderModules.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowSurface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\shader_base.frag" />
+    <None Include="shader\shader_base.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

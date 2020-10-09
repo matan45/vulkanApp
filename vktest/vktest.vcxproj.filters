@@ -22,6 +22,12 @@
     <Filter Include="Window">
       <UniqueIdentifier>{7415ad0b-db18-4f60-9d65-13636497627c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{b758f472-59f3-4101-a9f0-05922a9839b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsPipeline">
+      <UniqueIdentifier>{f1847721-383c-4c59-83ed-b1f4228fec27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,6 +42,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderModules.cpp">
+      <Filter>GraphicsPipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -47,5 +56,16 @@
     <ClInclude Include="Window.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderModules.h">
+      <Filter>GraphicsPipeline</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\shader_base.vert">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="shader\shader_base.frag">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>
