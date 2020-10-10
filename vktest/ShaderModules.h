@@ -7,6 +7,7 @@
 class ShaderModules
 {
 public:
+	void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
 	void createGraphicsPipline(VkDevice device,const VkExtent2D& swapChainExtent);
 	void cleanup(VkDevice device);
 private:
@@ -15,5 +16,7 @@ private:
 
 private:
 	VkPipelineLayout pipelineLayout;
+	VkRenderPass renderPass;
+	VkPipeline graphicsPipeline;
 };
 

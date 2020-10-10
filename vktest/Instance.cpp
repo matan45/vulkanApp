@@ -11,6 +11,7 @@ void Instance::initVulkan(GLFWwindow* window)
 		createLogicalDevice();
 		createSwapChain();
 		windowSurface.createImageView(device, swapChainImageFormat,swapChainImages);
+		shaderModules.createRenderPass(device,swapChainImageFormat);
 		shaderModules.createGraphicsPipline(device,swapChainExtent);
 	}
 	catch (const std::runtime_error& e) {
