@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Framebuffers.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderModules.cpp" />
@@ -26,8 +27,10 @@
     <ClCompile Include="WindowSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framebuffers.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="ShaderModules.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowSurface.h" />
   </ItemGroup>

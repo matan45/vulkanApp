@@ -13,6 +13,9 @@ void Instance::initVulkan(GLFWwindow* window)
 		windowSurface.createImageView(device, swapChainImageFormat,swapChainImages);
 		shaderModules.createRenderPass(device,swapChainImageFormat);
 		shaderModules.createGraphicsPipline(device,swapChainExtent);
+		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
+		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
+		framebuffers.createCommandBuffers(device, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
@@ -23,6 +26,7 @@ void Instance::initVulkan(GLFWwindow* window)
 void Instance::cleanup()
 {
 	//vkDeviceWaitIdle(device);
+	framebuffers.cleanup(device);
 	shaderModules.cleanup(device);
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 	windowSurface.cleanup(instance,device);
@@ -190,7 +194,7 @@ void Instance::createSwapChain()
 	swapChainExtent = extent;
 }
 
-bool Instance::isDeviceSuitable(const VkPhysicalDevice& device)
+bool Instance::isDeviceSuitable(const VkPhysicalDevice device)
 {
 	QueueFamilyIndices indices = findQueueFamilies(device);
 
@@ -204,7 +208,7 @@ bool Instance::isDeviceSuitable(const VkPhysicalDevice& device)
 	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
-QueueFamilyIndices Instance::findQueueFamilies(const VkPhysicalDevice& device)
+QueueFamilyIndices Instance::findQueueFamilies(const VkPhysicalDevice device)
 {
 	QueueFamilyIndices indices;
 

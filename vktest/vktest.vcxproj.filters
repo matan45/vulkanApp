@@ -28,6 +28,9 @@
     <Filter Include="GraphicsPipeline">
       <UniqueIdentifier>{f1847721-383c-4c59-83ed-b1f4228fec27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Drawing">
+      <UniqueIdentifier>{06f6dd97-4499-4928-9783-91c70e8ba241}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,6 +48,9 @@
     <ClCompile Include="ShaderModules.cpp">
       <Filter>GraphicsPipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Framebuffers.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -58,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="ShaderModules.h">
       <Filter>GraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Framebuffers.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Setup</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

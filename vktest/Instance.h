@@ -3,19 +3,12 @@
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <vector>
-#include <optional>
 
 #include "WindowSurface.h"
 #include "ShaderModules.h"
+#include "Framebuffers.h"
+#include "Util.h"
 
-struct QueueFamilyIndices
-{
-	std::optional<uint32_t> graphicsFamily;
-	std::optional<uint32_t> presentFamily;
-	bool isComplete() {
-		return graphicsFamily.has_value()&& presentFamily.has_value();
-	}
-};
 
 class Instance
 {
@@ -29,8 +22,8 @@ private:
 	bool checkValidationLayerSupport();
 	void pickPhysicalDevice();
 	void createSwapChain();
-	bool isDeviceSuitable(const VkPhysicalDevice& device);
-	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
+	bool isDeviceSuitable(const VkPhysicalDevice device);
+	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice device);
 	void createLogicalDevice();
 private:
 	VkInstance instance;
@@ -47,6 +40,7 @@ private:
 
 	WindowSurface windowSurface;
 	ShaderModules shaderModules;
+	Framebuffers framebuffers;
 
 	const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
