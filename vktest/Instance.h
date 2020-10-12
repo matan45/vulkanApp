@@ -17,6 +17,7 @@ public:
 	void initVulkan(GLFWwindow* window);
 	void cleanup();
 	void extensionSupport();
+	void drawFrame();
 private:
 	void createInstance();
 	bool checkValidationLayerSupport();

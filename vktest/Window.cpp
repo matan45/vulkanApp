@@ -8,15 +8,16 @@ Window::Window(const uint32_t WIDTH, const uint32_t HEIGHT, std::string&& title)
 	}
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(),nullptr,nullptr);
-
+	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
 void Window::run()
 {
 	instance.initVulkan(window);
-	//instance.extensionSupport();
+	instance.extensionSupport();
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
+		instance.drawFrame();
 	}
 	clenaup();
 }
@@ -26,6 +27,10 @@ void Window::clenaup()
 	instance.cleanup();
 	glfwDestroyWindow(window);
 	glfwTerminate();
+}
+
+void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+{
 }
 
 Window::~Window()

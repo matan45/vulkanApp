@@ -18,6 +18,7 @@ public:
 	}
 private:
 	void clenaup();
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
 private:
 	GLFWwindow* window;

@@ -10,12 +10,13 @@ void Instance::initVulkan(GLFWwindow* window)
 		pickPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain();
-		windowSurface.createImageView(device, swapChainImageFormat,swapChainImages);
-		shaderModules.createRenderPass(device,swapChainImageFormat);
-		shaderModules.createGraphicsPipline(device,swapChainExtent);
+		windowSurface.createImageView(device, swapChainImageFormat, swapChainImages);
+		shaderModules.createRenderPass(device, swapChainImageFormat);
+		shaderModules.createGraphicsPipline(device, swapChainExtent);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
 		framebuffers.createCommandBuffers(device, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+		framebuffers.createSyncObjects(device, swapChainImages);
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
@@ -25,11 +26,11 @@ void Instance::initVulkan(GLFWwindow* window)
 
 void Instance::cleanup()
 {
-	//vkDeviceWaitIdle(device);
+	vkDeviceWaitIdle(device);
 	framebuffers.cleanup(device);
 	shaderModules.cleanup(device);
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
-	windowSurface.cleanup(instance,device);
+	windowSurface.cleanup(instance, device);
 	vkDestroyDevice(device, nullptr);
 	vkDestroyInstance(instance, nullptr);
 }
@@ -44,6 +45,17 @@ void Instance::extensionSupport()
 	for (const auto& extension : extensions) {
 		std::cout << '\t' << extension.extensionName << std::endl;
 	}
+}
+
+void Instance::drawFrame()
+{
+	try {
+		framebuffers.draw(device, swapChain, graphicsQueue, presentQueue);
+	}
+	catch (const std::runtime_error& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
 }
 
 void Instance::createInstance()
