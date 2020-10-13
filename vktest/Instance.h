@@ -22,10 +22,15 @@ private:
 	void createInstance();
 	bool checkValidationLayerSupport();
 	void pickPhysicalDevice();
-	void createSwapChain();
+	void createSwapChain(GLFWwindow* window);
 	bool isDeviceSuitable(const VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice device);
 	void createLogicalDevice();
+	void recreateSwapChain(GLFWwindow* window);
+	void cleanupSwapchain();
+
+public:
+	bool framebufferResized = false;
 private:
 	VkInstance instance;
 	VkDevice device;
@@ -33,6 +38,8 @@ private:
 
 	VkQueue presentQueue;
 	VkQueue graphicsQueue;
+
+	GLFWwindow* inwindow = nullptr;
 	
 	VkSwapchainKHR swapChain;
 	std::vector<VkImage> swapChainImages;
@@ -42,6 +49,7 @@ private:
 	WindowSurface windowSurface;
 	ShaderModules shaderModules;
 	Framebuffers framebuffers;
+
 
 	const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"

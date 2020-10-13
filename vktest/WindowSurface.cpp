@@ -3,11 +3,8 @@
 #include <set>
 
 
-void WindowSurface::cleanup(const VkInstance instance, VkDevice device)
+void WindowSurface::cleanup(const VkInstance instance)
 {
-	for (auto& imageView : swapChainImageViews) {
-		vkDestroyImageView(device, imageView, nullptr);
-	}
 	vkDestroySurfaceKHR(instance, surface, nullptr);
 }
 
@@ -68,13 +65,18 @@ VkPresentModeKHR WindowSurface::chooseSwapPresentMode(const std::vector<VkPresen
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D WindowSurface::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+VkExtent2D WindowSurface::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window)
 {
 	if (capabilities.currentExtent.width != UINT32_MAX) {
 		return capabilities.currentExtent;
 	}
 	else {
-		VkExtent2D actualExtent = { 600,800 };
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		VkExtent2D actualExtent = {
+			static_cast<uint32_t>(width),
+			static_cast<uint32_t>(height)
+		};
 		actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
 		actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
 		return actualExtent;
@@ -103,6 +105,13 @@ void WindowSurface::createImageView(VkDevice device, VkFormat swapChainImageForm
 		if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image view");
 		}
+	}
+}
+
+void WindowSurface::cleanupSwapChain(VkDevice device)
+{
+	for (auto& imageView : swapChainImageViews) {
+		vkDestroyImageView(device, imageView, nullptr);
 	}
 }
 

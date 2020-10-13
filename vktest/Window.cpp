@@ -8,6 +8,7 @@ Window::Window(const uint32_t WIDTH, const uint32_t HEIGHT, std::string&& title)
 	}
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(),nullptr,nullptr);
+	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
@@ -31,6 +32,8 @@ void Window::clenaup()
 
 void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
+	auto app = reinterpret_cast<Instance*>(glfwGetWindowUserPointer(window));
+	app->framebufferResized = true;
 }
 
 Window::~Window()

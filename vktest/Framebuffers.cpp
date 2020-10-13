@@ -1,6 +1,7 @@
 #include "Framebuffers.h"
 #include <stdexcept>
 
+
 void Framebuffers::createFramebuffers(const std::vector<VkImageView>& swapChainImageViews, VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent)
 {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
@@ -110,12 +111,20 @@ void Framebuffers::createSyncObjects(VkDevice device, const std::vector<VkImage>
 	}
 }
 
-void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphicsQueue, VkQueue presentQueue)
+void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphicsQueue, VkQueue presentQueue, GLFWwindow* window, bool& framebufferResized, std::function<void(GLFWwindow*)>recreateSwapChain)
 {
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t imageindex;
-	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageindex);
+	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageindex);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		//create the object but not destroy after every time the window resize
+		recreateSwapChain(window);
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("failed to acquire swap chain image");
+	}
 
 	if (imagesInFlight[imageindex] != VK_NULL_HANDLE) {
 		vkWaitForFences(device, 1, &imagesInFlight[imageindex], VK_TRUE, UINT64_MAX);
@@ -155,9 +164,17 @@ void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphi
 
 	presentInfo.pImageIndices = &imageindex;
 
-	vkQueuePresentKHR(presentQueue, &presentInfo);
+	result = vkQueuePresentKHR(presentQueue, &presentInfo);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
+		framebufferResized = false;
+		recreateSwapChain(window);
+	}
+	else if (result != VK_SUCCESS) {
+		throw std::runtime_error("failed to present swap chain image!");
+	}
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+	
 }
 
 void Framebuffers::cleanup(VkDevice device)
@@ -169,7 +186,13 @@ void Framebuffers::cleanup(VkDevice device)
 		vkDestroyFence(device, inFlightFences[i], nullptr);
 	}
 	vkDestroyCommandPool(device, commandPool, nullptr);
+	
+}
+
+void Framebuffers::cleanupSwapChain(VkDevice device)
+{
 	for (auto framebuffer : swapChainFramebuffers) {
 		vkDestroyFramebuffer(device, framebuffer, nullptr);
 	}
+	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 }
