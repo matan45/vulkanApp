@@ -4,6 +4,7 @@
 #include "Util.h"
 #include <functional>
 #include <GLFW/glfw3.h>
+class VertexInput;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -12,7 +13,7 @@ class Framebuffers
 public:
 	void createFramebuffers(const std::vector<VkImageView>& swapChainImageViews, VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent);
 	void createCommandPool(VkDevice device,const QueueFamilyIndices& QueueFamilies);
-	void createCommandBuffers(VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline);
+	void createCommandBuffers(VkDevice device, const VertexInput& vertexInput, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline);
 	void createSyncObjects(VkDevice device,const std::vector<VkImage>& swapChainImages);
 	void draw(VkDevice device, VkSwapchainKHR swapChain, VkQueue graphicsQueue, VkQueue presentQueue, GLFWwindow* window, bool& framebufferResized,std::function<void(GLFWwindow*)>recreateSwapChain);
 	void cleanup(VkDevice device);

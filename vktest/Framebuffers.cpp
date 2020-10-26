@@ -1,5 +1,7 @@
 #include "Framebuffers.h"
 #include <stdexcept>
+#include "VertexInput.h"
+#include <iostream>
 
 
 void Framebuffers::createFramebuffers(const std::vector<VkImageView>& swapChainImageViews, VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent)
@@ -36,7 +38,7 @@ void Framebuffers::createCommandPool(VkDevice device, const QueueFamilyIndices& 
 	}
 }
 
-void Framebuffers::createCommandBuffers(VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline)
+void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& vertexInput, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline)
 {
 	commandBuffers.resize(swapChainFramebuffers.size());
 
@@ -77,7 +79,11 @@ void Framebuffers::createCommandBuffers(VkDevice device, VkRenderPass renderPass
 
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-		vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+		VkBuffer vertexBuffers[] = { vertexInput.vertexBuffer };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
+
+		vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(vertexInput.vertices.size()), 1, 0, 0);
 
 		vkCmdEndRenderPass(commandBuffers[i]);
 

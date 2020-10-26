@@ -8,6 +8,7 @@
 #include "ShaderModules.h"
 #include "Framebuffers.h"
 #include "Util.h"
+#include "VertexInput.h"
 
 
 class Instance
@@ -49,6 +50,8 @@ private:
 	WindowSurface windowSurface;
 	ShaderModules shaderModules;
 	Framebuffers framebuffers;
+
+	VertexInput vertexInput;
 
 
 	const std::vector<const char*> validationLayers = {

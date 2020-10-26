@@ -23,6 +23,7 @@
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderModules.cpp" />
+    <ClCompile Include="VertexInput.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowSurface.cpp" />
   </ItemGroup>
@@ -31,6 +32,7 @@
     <ClInclude Include="Instance.h" />
     <ClInclude Include="ShaderModules.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="VertexInput.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowSurface.h" />
   </ItemGroup>

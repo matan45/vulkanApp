@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "VertexInput.h"
 
 class ShaderModules
 {
@@ -26,5 +27,6 @@ private:
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
 	VkPipeline graphicsPipeline;
+
 };
 

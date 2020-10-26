@@ -16,7 +16,8 @@ void Instance::initVulkan(GLFWwindow* window)
 		shaderModules.createGraphicsPipline(device, swapChainExtent);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
-		framebuffers.createCommandBuffers(device, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+		vertexInput.createVertexBuffer(device,physicalDevice);
+		framebuffers.createCommandBuffers(device,vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
 		framebuffers.createSyncObjects(device, swapChainImages);
 	}
 	catch (const std::runtime_error& e) {
@@ -318,13 +319,14 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 	shaderModules.createGraphicsPipline(device, swapChainExtent);
 	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 	framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
-	framebuffers.createCommandBuffers(device, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+	framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
 	
 }
 
 void Instance::cleanupSwapchain()
 {
 	framebuffers.cleanupSwapChain(device);
+	vertexInput.cleanup(device);
 	shaderModules.cleanup(device);
 	windowSurface.cleanupSwapChain(device);
 	vkDestroySwapchainKHR(device, swapChain, nullptr);

@@ -31,6 +31,9 @@
     <Filter Include="Drawing">
       <UniqueIdentifier>{06f6dd97-4499-4928-9783-91c70e8ba241}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VertexBuffers">
+      <UniqueIdentifier>{d4399a42-0111-4e68-92a6-648b04deb3c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,6 +54,9 @@
     <ClCompile Include="Framebuffers.cpp">
       <Filter>Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="VertexInput.cpp">
+      <Filter>VertexBuffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -70,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="Util.h">
       <Filter>Setup</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexInput.h">
+      <Filter>VertexBuffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
