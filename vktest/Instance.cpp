@@ -16,7 +16,7 @@ void Instance::initVulkan(GLFWwindow* window)
 		shaderModules.createGraphicsPipline(device, swapChainExtent);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
-		vertexInput.createVertexBuffer(device,physicalDevice);
+		vertexInput.createVertexBuffer(device,physicalDevice,framebuffers.commandPool,graphicsQueue);
 		framebuffers.createCommandBuffers(device,vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
 		framebuffers.createSyncObjects(device, swapChainImages);
 	}

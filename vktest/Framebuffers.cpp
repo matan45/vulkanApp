@@ -183,6 +183,8 @@ void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphi
 	
 }
 
+
+
 void Framebuffers::cleanup(VkDevice device)
 {
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)

@@ -19,10 +19,10 @@ public:
 	void cleanup(VkDevice device);
 	void cleanupSwapChain(VkDevice device);
 
+	VkCommandPool commandPool;
 private:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	std::vector<VkCommandBuffer> commandBuffers;
-	VkCommandPool commandPool;
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
