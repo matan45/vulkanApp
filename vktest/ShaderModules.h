@@ -4,12 +4,13 @@
 #include <fstream>
 #include <vector>
 #include "VertexInput.h"
+class Discriptor;
 
 class ShaderModules
 {
 public:
 	void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
-	void createGraphicsPipline(VkDevice device,const VkExtent2D& swapChainExtent);
+	void createGraphicsPipline(VkDevice device,const VkExtent2D& swapChainExtent, Discriptor& discriptor);
 	void cleanup(VkDevice device);
 
 	VkRenderPass getRenderPass()const {

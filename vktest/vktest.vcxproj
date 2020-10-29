@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Discriptor.cpp" />
     <ClCompile Include="Framebuffers.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="WindowSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Discriptor.h" />
     <ClInclude Include="Framebuffers.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="ShaderModules.h" />

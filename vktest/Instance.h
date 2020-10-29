@@ -9,6 +9,7 @@
 #include "Framebuffers.h"
 #include "Util.h"
 #include "VertexInput.h"
+#include "Discriptor.h"
 
 
 class Instance
@@ -52,6 +53,8 @@ private:
 	Framebuffers framebuffers;
 
 	VertexInput vertexInput;
+
+	Discriptor discriptor;
 
 
 	const std::vector<const char*> validationLayers = {

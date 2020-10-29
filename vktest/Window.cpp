@@ -15,7 +15,7 @@ Window::Window(const uint32_t WIDTH, const uint32_t HEIGHT, std::string&& title)
 void Window::run()
 {
 	instance.initVulkan(window);
-	instance.extensionSupport();
+	//instance.extensionSupport();
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		instance.drawFrame();

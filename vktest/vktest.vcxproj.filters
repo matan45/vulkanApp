@@ -34,6 +34,9 @@
     <Filter Include="VertexBuffers">
       <UniqueIdentifier>{d4399a42-0111-4e68-92a6-648b04deb3c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UniformBuffers">
+      <UniqueIdentifier>{d2a333ce-e55f-4f85-b64f-28211cb2024c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,6 +60,9 @@
     <ClCompile Include="VertexInput.cpp">
       <Filter>VertexBuffers</Filter>
     </ClCompile>
+    <ClCompile Include="Discriptor.cpp">
+      <Filter>UniformBuffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="VertexInput.h">
       <Filter>VertexBuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Discriptor.h">
+      <Filter>UniformBuffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

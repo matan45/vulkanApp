@@ -8,3 +8,5 @@ struct QueueFamilyIndices
 		return graphicsFamily.has_value() && presentFamily.has_value();
 	}
 };
+
+

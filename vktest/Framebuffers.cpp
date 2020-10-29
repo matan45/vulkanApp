@@ -1,6 +1,7 @@
 #include "Framebuffers.h"
 #include <stdexcept>
 #include "VertexInput.h"
+#include "Discriptor.h"
 #include <iostream>
 
 
@@ -56,22 +57,21 @@ void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& verte
 
 	for (size_t i = 0; i < commandBuffers.size(); i++)
 	{
-		VkCommandBufferBeginInfo beginInfo = {};
+		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = 0;
-		beginInfo.pInheritanceInfo = nullptr;
 
 		if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) {
-			throw std::runtime_error("failed to begin recording command buffer");
+			throw std::runtime_error("failed to begin recording command buffer!");
 		}
 
-		VkRenderPassBeginInfo renderPassInfo = {};
+		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = swapChainFramebuffers[i];
-		renderPassInfo.renderArea.offset = { 0,0 };
+		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = swapChainExtent;
 
+		VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = &clearColor;
 
@@ -88,8 +88,9 @@ void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& verte
 		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(vertexInput.indices.size()), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(commandBuffers[i]);
+
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer");
+			throw std::runtime_error("failed to record command buffer!");
 		}
 	}
 }
@@ -118,7 +119,7 @@ void Framebuffers::createSyncObjects(VkDevice device, const std::vector<VkImage>
 	}
 }
 
-void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphicsQueue, VkQueue presentQueue, GLFWwindow* window, bool& framebufferResized, std::function<void(GLFWwindow*)>recreateSwapChain)
+void Framebuffers::draw(VkDevice& device,VkSwapchainKHR swapChain, VkQueue& graphicsQueue, VkQueue& presentQueue, GLFWwindow* window,Discriptor& discriptor, bool& framebufferResized, std::function<void(GLFWwindow*)>recreateSwapChain, VkExtent2D& swapChainExtent)
 {
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -137,6 +138,8 @@ void Framebuffers::draw(VkDevice device,VkSwapchainKHR swapChain, VkQueue graphi
 		vkWaitForFences(device, 1, &imagesInFlight[imageindex], VK_TRUE, UINT64_MAX);
 	}
 	imagesInFlight[imageindex] = inFlightFences[currentFrame];
+
+	discriptor.updateUniformBuffer(imageindex,swapChainExtent,device);
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

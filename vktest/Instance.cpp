@@ -13,12 +13,14 @@ void Instance::initVulkan(GLFWwindow* window)
 		createSwapChain(window);
 		windowSurface.createImageView(device, swapChainImageFormat, swapChainImages);
 		shaderModules.createRenderPass(device, swapChainImageFormat);
-		shaderModules.createGraphicsPipline(device, swapChainExtent);
+		discriptor.createDescriptorSetLayout(device);
+		shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
-		vertexInput.createVertexBuffer(device,physicalDevice,framebuffers.commandPool,graphicsQueue);
+		vertexInput.createVertexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		vertexInput.createIndexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
-		framebuffers.createCommandBuffers(device,vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+		discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
+		framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
 		framebuffers.createSyncObjects(device, swapChainImages);
 	}
 	catch (const std::runtime_error& e) {
@@ -31,9 +33,11 @@ void Instance::cleanup()
 {
 	vkDeviceWaitIdle(device);
 	cleanupSwapchain();
-	
+
+	discriptor.cleanup(device);
+
 	framebuffers.cleanup(device);
-	
+
 	windowSurface.cleanup(instance);
 	vkDestroyDevice(device, nullptr);
 	vkDestroyInstance(instance, nullptr);
@@ -55,7 +59,7 @@ void Instance::drawFrame()
 {
 	auto func = std::bind(&Instance::recreateSwapChain, this, inwindow);
 	try {
-		framebuffers.draw(device, swapChain, graphicsQueue, presentQueue, inwindow, framebufferResized, func);
+		framebuffers.draw(device, swapChain, graphicsQueue, presentQueue, inwindow, discriptor, framebufferResized, func, swapChainExtent);
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
@@ -164,7 +168,7 @@ void Instance::createSwapChain(GLFWwindow* window)
 
 	VkSurfaceFormatKHR surfaceFormat = windowSurface.chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = windowSurface.chooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = windowSurface.chooseSwapExtent(swapChainSupport.capabilities,window);
+	VkExtent2D extent = windowSurface.chooseSwapExtent(swapChainSupport.capabilities, window);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -304,7 +308,7 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 {
 	int width = 0, height = 0;
 	glfwGetFramebufferSize(window, &width, &height);
-	while (width==0||height==0)
+	while (width == 0 || height == 0)
 	{
 		glfwGetFramebufferSize(window, &width, &height);
 		glfwWaitEvents();
@@ -317,11 +321,12 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 	createSwapChain(window);
 	windowSurface.createImageView(device, swapChainImageFormat, swapChainImages);
 	shaderModules.createRenderPass(device, swapChainImageFormat);
-	shaderModules.createGraphicsPipline(device, swapChainExtent);
+	shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
 	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
-	framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
+	//framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
+	discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
 	framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
-	
+
 }
 
 void Instance::cleanupSwapchain()
@@ -331,6 +336,7 @@ void Instance::cleanupSwapchain()
 	shaderModules.cleanup(device);
 	windowSurface.cleanupSwapChain(device);
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
+	discriptor.cleanupuniformBuffers(device, swapChainImages);
 }
 
 
