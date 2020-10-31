@@ -20,12 +20,14 @@ public:
 	VkPipeline getGraphicsPipeline()const {
 		return graphicsPipeline;
 	}
+
+	VkPipelineLayout pipelineLayout;
 private:
 	VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
 	static std::vector<char> readFile(const std::string& filename);
 
 private:
-	VkPipelineLayout pipelineLayout;
+	
 	VkRenderPass renderPass;
 	VkPipeline graphicsPipeline;
 

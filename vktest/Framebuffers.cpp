@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "VertexInput.h"
 #include "Discriptor.h"
+#include "ShaderModules.h"
 #include <iostream>
 
 
@@ -39,7 +40,7 @@ void Framebuffers::createCommandPool(VkDevice device, const QueueFamilyIndices& 
 	}
 }
 
-void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& vertexInput, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline)
+void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& vertexInput, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline, Discriptor& discriptor, ShaderModules& shaderModules)
 {
 	commandBuffers.resize(swapChainFramebuffers.size());
 
@@ -55,8 +56,7 @@ void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& verte
 
 	VkClearValue clearColor = { 0.0f,0.0f,0.0f,1.0f };
 
-	for (size_t i = 0; i < commandBuffers.size(); i++)
-	{
+	for (size_t i = 0; i < commandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -79,11 +79,13 @@ void Framebuffers::createCommandBuffers(VkDevice device,const VertexInput& verte
 
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-		VkBuffer vertexBuffers[] = { vertexInput.vertexBuffer };
+		VkBuffer vertexBuffers[] = {vertexInput.vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
 		vkCmdBindIndexBuffer(commandBuffers[i], vertexInput.indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, shaderModules.pipelineLayout, 0, 1, &discriptor.descriptorSets[i], 0, nullptr);
 
 		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(vertexInput.indices.size()), 1, 0, 0, 0);
 

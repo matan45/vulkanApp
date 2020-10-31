@@ -20,7 +20,9 @@ void Instance::initVulkan(GLFWwindow* window)
 		vertexInput.createVertexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		vertexInput.createIndexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
-		framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+		discriptor.createDescriptorPool(device, swapChainImages);
+		discriptor.createDescriptorSets(device, swapChainImages);
+		framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline(),discriptor,shaderModules);
 		framebuffers.createSyncObjects(device, swapChainImages);
 	}
 	catch (const std::runtime_error& e) {
@@ -325,7 +327,9 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 	//framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
 	discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
-	framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline());
+	discriptor.createDescriptorPool(device, swapChainImages);
+	discriptor.createDescriptorSets(device, swapChainImages);
+	framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline(),discriptor, shaderModules);
 
 }
 

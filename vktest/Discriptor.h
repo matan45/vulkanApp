@@ -20,11 +20,16 @@ public:
 	void createUniformBuffers(std::vector<VkImage>& swapChainImages,VertexInput& vertexInput, VkDevice device, VkPhysicalDevice physicalDevice);
 	void cleanupuniformBuffers(VkDevice device, std::vector<VkImage>& swapChainImages);
 	void updateUniformBuffer(uint32_t currentImage, VkExtent2D &swapChainExtent, VkDevice& device);
+	void createDescriptorPool(VkDevice device, std::vector<VkImage>& swapChainImages);
+	void createDescriptorSets(VkDevice device, std::vector<VkImage>& swapChainImages);
 
 	VkDescriptorSetLayout descriptorSetLayout;
+	std::vector<VkDescriptorSet> descriptorSets;
+
 private:
 
-	VkPipelineLayout pipelineLayout;
+	VkDescriptorPool descriptorPool;
+	
 
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
