@@ -1,5 +1,6 @@
 lib
 Debug
+vktest/resources
 vktest/Debug
 .vs
 *.spv

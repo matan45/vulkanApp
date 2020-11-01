@@ -10,6 +10,7 @@
 #include "Util.h"
 #include "VertexInput.h"
 #include "Discriptor.h"
+#include "Image.h"
 
 
 class Instance
@@ -55,6 +56,8 @@ private:
 	VertexInput vertexInput;
 
 	Discriptor discriptor;
+
+	Image image;
 
 
 	const std::vector<const char*> validationLayers = {

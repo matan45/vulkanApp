@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Discriptor.cpp" />
     <ClCompile Include="Framebuffers.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderModules.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="Discriptor.h" />
     <ClInclude Include="Framebuffers.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="ShaderModules.h" />
     <ClInclude Include="Util.h" />

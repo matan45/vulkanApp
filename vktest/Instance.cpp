@@ -17,6 +17,7 @@ void Instance::initVulkan(GLFWwindow* window)
 		shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
+		image.createTextureImage(device,vertexInput,physicalDevice,framebuffers.commandPool,graphicsQueue);
 		vertexInput.createVertexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		vertexInput.createIndexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
@@ -35,6 +36,8 @@ void Instance::cleanup()
 {
 	vkDeviceWaitIdle(device);
 	cleanupSwapchain();
+
+	image.cleanup(device);
 
 	discriptor.cleanup(device);
 
