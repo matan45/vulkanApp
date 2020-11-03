@@ -11,13 +11,15 @@ void Instance::initVulkan(GLFWwindow* window)
 		pickPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain(window);
-		windowSurface.createImageView(device, swapChainImageFormat, swapChainImages);
+		windowSurface.createImageViews(device, swapChainImageFormat, swapChainImages);
 		shaderModules.createRenderPass(device, swapChainImageFormat);
 		discriptor.createDescriptorSetLayout(device);
 		shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
 		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
 		image.createTextureImage(device,vertexInput,physicalDevice,framebuffers.commandPool,graphicsQueue);
+		image.createTextureImageView(device);
+		image.createTextureSampler(device);
 		vertexInput.createVertexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		vertexInput.createIndexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
@@ -232,8 +234,10 @@ bool Instance::isDeviceSuitable(const VkPhysicalDevice device)
 		SwapChainSupportDetails swapChainSupport = windowSurface.querySwapChainSupport(device);
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
-	return indices.isComplete() && extensionsSupported && swapChainAdequate;
+	return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 }
 
 QueueFamilyIndices Instance::findQueueFamilies(const VkPhysicalDevice device)
@@ -283,6 +287,7 @@ void Instance::createLogicalDevice()
 		queueCreateInfos.push_back(queueCreateInfo);
 	}
 	VkPhysicalDeviceFeatures deviceFeatures = {};
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -324,7 +329,7 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 	cleanupSwapchain();
 
 	createSwapChain(window);
-	windowSurface.createImageView(device, swapChainImageFormat, swapChainImages);
+	windowSurface.createImageViews(device, swapChainImageFormat, swapChainImages);
 	shaderModules.createRenderPass(device, swapChainImageFormat);
 	shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
 	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);

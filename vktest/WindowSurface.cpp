@@ -83,9 +83,9 @@ VkExtent2D WindowSurface::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capab
 	}
 }
 
-void WindowSurface::createImageView(VkDevice device, VkFormat swapChainImageFormat,const std::vector<VkImage>& swapChainImages)
+void WindowSurface::createImageViews(VkDevice device, VkFormat swapChainImageFormat,const std::vector<VkImage>& swapChainImages)
 {
-	swapChainImageViews.resize(swapChainImages.size());
+	/*swapChainImageViews.resize(swapChainImages.size());
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
 		VkImageViewCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -105,6 +105,13 @@ void WindowSurface::createImageView(VkDevice device, VkFormat swapChainImageForm
 		if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image view");
 		}
+
+	}*/
+
+	swapChainImageViews.resize(swapChainImages.size());
+
+	for (uint32_t i = 0; i < swapChainImages.size(); i++) {
+		swapChainImageViews[i] = createImageView(device,swapChainImages[i], swapChainImageFormat);
 	}
 }
 
@@ -113,6 +120,27 @@ void WindowSurface::cleanupSwapChain(VkDevice device)
 	for (auto& imageView : swapChainImageViews) {
 		vkDestroyImageView(device, imageView, nullptr);
 	}
+}
+
+VkImageView WindowSurface::createImageView(VkDevice device, VkImage image, VkFormat format)
+{
+	VkImageViewCreateInfo viewInfo{};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.image = image;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.format = format;
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = 1;
+
+	VkImageView imageView;
+	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create texture image view!");
+	}
+
+	return imageView;
 }
 
 void WindowSurface::createSurface(VkInstance instance, GLFWwindow* window)
