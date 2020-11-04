@@ -9,6 +9,9 @@ public:
 	void cleanup(VkDevice device);
 	void createTextureImageView(VkDevice device);
 	void createTextureSampler(VkDevice device);
+
+	VkImageView textureImageView;
+	VkSampler textureSampler;
 private:
 	void createImage(VkDevice device, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, VertexInput& input, VkPhysicalDevice physicalDevice);
 	VkCommandBuffer beginSingleTimeCommands(VkDevice device, VkCommandPool commandPool);
@@ -20,8 +23,6 @@ private:
 private:
 	VkImage textureImage;
 	VkDeviceMemory textureImageMemory;
-
-	VkImageView textureImageView;
-	VkSampler textureSampler;
+	
 };
 

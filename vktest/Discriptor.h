@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 class VertexInput;
+class Image;
 
 
 struct UniformBufferObject {
@@ -21,7 +22,7 @@ public:
 	void cleanupuniformBuffers(VkDevice device, std::vector<VkImage>& swapChainImages);
 	void updateUniformBuffer(uint32_t currentImage, VkExtent2D &swapChainExtent, VkDevice& device);
 	void createDescriptorPool(VkDevice device, std::vector<VkImage>& swapChainImages);
-	void createDescriptorSets(VkDevice device, std::vector<VkImage>& swapChainImages);
+	void createDescriptorSets(VkDevice device, std::vector<VkImage>& swapChainImages,Image& image);
 
 	VkDescriptorSetLayout descriptorSetLayout;
 	std::vector<VkDescriptorSet> descriptorSets;

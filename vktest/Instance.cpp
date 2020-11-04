@@ -24,7 +24,7 @@ void Instance::initVulkan(GLFWwindow* window)
 		vertexInput.createIndexBuffer(device, physicalDevice, framebuffers.commandPool, graphicsQueue);
 		discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
 		discriptor.createDescriptorPool(device, swapChainImages);
-		discriptor.createDescriptorSets(device, swapChainImages);
+		discriptor.createDescriptorSets(device, swapChainImages,image);
 		framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline(),discriptor,shaderModules);
 		framebuffers.createSyncObjects(device, swapChainImages);
 	}
@@ -336,7 +336,7 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 	//framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
 	discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
 	discriptor.createDescriptorPool(device, swapChainImages);
-	discriptor.createDescriptorSets(device, swapChainImages);
+	discriptor.createDescriptorSets(device, swapChainImages, image);
 	framebuffers.createCommandBuffers(device, vertexInput, shaderModules.getRenderPass(), swapChainExtent, shaderModules.getGraphicsPipeline(),discriptor, shaderModules);
 
 }
