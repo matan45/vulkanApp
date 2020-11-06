@@ -37,7 +37,7 @@ public:
 	}
 
 private:
-	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format);
+	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 private:
 	VkSurfaceKHR surface;

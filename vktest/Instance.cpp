@@ -12,11 +12,12 @@ void Instance::initVulkan(GLFWwindow* window)
 		createLogicalDevice();
 		createSwapChain(window);
 		windowSurface.createImageViews(device, swapChainImageFormat, swapChainImages);
-		shaderModules.createRenderPass(device, swapChainImageFormat);
+		shaderModules.createRenderPass(physicalDevice,device, swapChainImageFormat, depthBuffering);
 		discriptor.createDescriptorSetLayout(device);
 		shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
-		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
 		framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
+		depthBuffering.createDepthResources(physicalDevice, device, image, swapChainExtent, vertexInput);
+		framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent, depthBuffering);
 		image.createTextureImage(device,vertexInput,physicalDevice,framebuffers.commandPool,graphicsQueue);
 		image.createTextureImageView(device);
 		image.createTextureSampler(device);
@@ -330,9 +331,10 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 
 	createSwapChain(window);
 	windowSurface.createImageViews(device, swapChainImageFormat, swapChainImages);
-	shaderModules.createRenderPass(device, swapChainImageFormat);
+	shaderModules.createRenderPass(physicalDevice,device, swapChainImageFormat,depthBuffering);
 	shaderModules.createGraphicsPipline(device, swapChainExtent, discriptor);
-	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent);
+	depthBuffering.createDepthResources(physicalDevice, device, image, swapChainExtent, vertexInput);
+	framebuffers.createFramebuffers(windowSurface.getSwapChainImageViews(), device, shaderModules.getRenderPass(), swapChainExtent,depthBuffering);
 	//framebuffers.createCommandPool(device, findQueueFamilies(physicalDevice));
 	discriptor.createUniformBuffers(swapChainImages, vertexInput, device, physicalDevice);
 	discriptor.createDescriptorPool(device, swapChainImages);
@@ -343,6 +345,7 @@ void Instance::recreateSwapChain(GLFWwindow* window)
 
 void Instance::cleanupSwapchain()
 {
+	depthBuffering.cleanup(device);
 	framebuffers.cleanupSwapChain(device);
 	vertexInput.cleanup(device);
 	shaderModules.cleanup(device);

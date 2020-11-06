@@ -7,13 +7,14 @@
 class VertexInput;
 class Discriptor;
 class ShaderModules;
+class DepthBuffering;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class Framebuffers
 {
 public:
-	void createFramebuffers(const std::vector<VkImageView>& swapChainImageViews, VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent);
+	void createFramebuffers(const std::vector<VkImageView>& swapChainImageViews, VkDevice device, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, DepthBuffering& d);
 	void createCommandPool(VkDevice device,const QueueFamilyIndices& QueueFamilies);
 	void createCommandBuffers(VkDevice device, const VertexInput& vertexInput, VkRenderPass renderPass, const VkExtent2D& swapChainExtent, VkPipeline graphicsPipeline, Discriptor& discriptor, ShaderModules& shaderModules);
 	void createSyncObjects(VkDevice device,const std::vector<VkImage>& swapChainImages);

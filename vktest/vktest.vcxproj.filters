@@ -40,6 +40,9 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{ddca2199-4906-4fe6-b914-bacba1dbd80f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Depth image">
+      <UniqueIdentifier>{3a2c6056-7ae9-4a32-95ac-526df3fdd7c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="Image.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
+    <ClCompile Include="DepthBuffering.cpp">
+      <Filter>Depth image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -97,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthBuffering.h">
+      <Filter>Depth image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

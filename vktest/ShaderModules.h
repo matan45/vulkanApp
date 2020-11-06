@@ -5,11 +5,12 @@
 #include <vector>
 #include "VertexInput.h"
 class Discriptor;
+class DepthBuffering;
 
 class ShaderModules
 {
 public:
-	void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
+	void createRenderPass(VkPhysicalDevice physicalDevice,VkDevice device, VkFormat swapChainImageFormat,DepthBuffering& d);
 	void createGraphicsPipline(VkDevice device,const VkExtent2D& swapChainExtent, Discriptor& discriptor);
 	void cleanup(VkDevice device);
 

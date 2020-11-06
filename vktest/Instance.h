@@ -11,7 +11,7 @@
 #include "VertexInput.h"
 #include "Discriptor.h"
 #include "Image.h"
-
+#include "DepthBuffering.h"
 
 class Instance
 {
@@ -58,6 +58,8 @@ private:
 	Discriptor discriptor;
 
 	Image image;
+
+	DepthBuffering depthBuffering;
 
 
 	const std::vector<const char*> validationLayers = {
