@@ -1,4 +1,4 @@
-
+/**
 #include "Window.h"
 
 
@@ -8,5 +8,5 @@ int main()
     
     app.run();
 }
-
+*/
 

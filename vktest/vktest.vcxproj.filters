@@ -43,6 +43,9 @@
     <Filter Include="Depth image">
       <UniqueIdentifier>{3a2c6056-7ae9-4a32-95ac-526df3fdd7c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LoadingModels">
+      <UniqueIdentifier>{89aa1117-5cf1-4b97-9d8d-1941a3c4746c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,6 +78,12 @@
     <ClCompile Include="DepthBuffering.cpp">
       <Filter>Depth image</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>LoadingModels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instance.h">
@@ -106,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="DepthBuffering.h">
       <Filter>Depth image</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>LoadingModels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

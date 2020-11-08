@@ -25,7 +25,9 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ShaderModules.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="VertexInput.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowSurface.cpp" />
@@ -36,6 +38,7 @@
     <ClInclude Include="Framebuffers.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="ShaderModules.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexInput.h" />
